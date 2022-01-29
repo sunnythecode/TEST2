@@ -21,7 +21,7 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-  SDrive drive;
+  SDrive sDrive = SDrive(0, 0, 1, 2, 3);
 
 
 

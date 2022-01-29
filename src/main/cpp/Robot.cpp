@@ -17,7 +17,9 @@ void Robot::RobotInit() {}
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  sDrive.Joystick_Display();
+}
 
 /**
  * This function is called once each time the robot enters Disabled mode. You
@@ -43,24 +45,13 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
-  if (m_autonomousCommand != nullptr) {
-    m_autonomousCommand->Cancel();
-    m_autonomousCommand = nullptr;
-  }
+
 }
 
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {
-  frc::SmartDashboard::PutNumber("Joystick X:", drive.jstick.GetX());
-  frc::SmartDashboard::PutNumber("Joystick Y:", drive.jstick.GetY());
-  
-}
+void Robot::TeleopPeriodic() {}
 
 /**
  * This function is called periodically during test mode.
