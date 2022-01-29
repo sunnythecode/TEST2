@@ -32,3 +32,23 @@ void SDrive::Joystick_Display() {
     frc::SmartDashboard::PutNumber("Joystick Y", jstick->GetY());
 
 }
+void SDrive::Arcade_Drive() {
+    int left_Final;
+    int right_Final;
+    // Turning
+    if (jstick->GetRawButton(0)) {
+        if (jstick->GetX() > 0) {
+            leftMotor->Set(jstick->GetX());
+            rightMotor->Set(-jstick->GetX());
+        } else {
+            leftMotor->Set(jstick->GetX());
+            rightMotor->Set(-jstick->GetX());
+        }
+    }
+
+    
+    leftMotor->Set(jstick->GetY());
+    rightMotor->Set(jstick->GetY());
+
+
+}

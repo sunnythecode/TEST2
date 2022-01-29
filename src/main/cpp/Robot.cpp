@@ -51,7 +51,9 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  sDrive.Arcade_Drive();
+}
 
 /**
  * This function is called periodically during test mode.
