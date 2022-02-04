@@ -7,7 +7,30 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  m_leftLeadMotor->RestoreFactoryDefaults();
+  m_rightLeadMotor->RestoreFactoryDefaults();
+  m_leftFollowMotor->RestoreFactoryDefaults();
+  m_rightFollowMotor->RestoreFactoryDefaults();
+
+  // Set current limit for drive motors
+  m_leftLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
+  m_rightLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
+  m_leftFollowMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
+  m_rightLeadMotor->SetSmartCurrentLimit(driveMotorCurrentLimit);
+
+  // Set drive motors to brake mode
+  m_leftLeadMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  m_rightLeadMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  m_leftFollowMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  m_rightFollowMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
+  // Set followers and inverts for drive motors
+  m_leftLeadMotor->SetInverted(true);
+  m_leftFollowMotor->Follow(*m_leftLeadMotor, false);
+  m_rightLeadMotor->SetInverted(false);
+  m_rightFollowMotor->Follow(*m_rightLeadMotor, false);
+}
 
 /**
  * This function is called every robot packet, no matter the mode. Use

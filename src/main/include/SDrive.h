@@ -28,27 +28,21 @@ SDrive::SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID)
 
 }
 void SDrive::Joystick_Display() {
-    frc::SmartDashboard::PutNumber("Joystick X", jstick->GetX());
-    frc::SmartDashboard::PutNumber("Joystick Y", jstick->GetY());
+    frc::SmartDashboard::PutNumber("left y: ", -(jstick->GetRawAxis(1)));
+    frc::SmartDashboard::PutNumber("right x: ", jstick->GetRawAxis(4));
+    //frc::SmartDashboard::PutNumber("current", m_leftLeadMotor->GetOutputCurrent());
 
 }
 void SDrive::Arcade_Drive() {
-    int left_Final;
-    int right_Final;
+    int left_Final = jstick->GetY();
+    int right_Final = jstick->GetY();
     // Turning
-    if (jstick->GetRawButton(0)) {
-        if (jstick->GetX() > 0) {
-            leftMotor->Set(jstick->GetX());
-            rightMotor->Set(-jstick->GetX());
-        } else {
-            leftMotor->Set(jstick->GetX());
-            rightMotor->Set(-jstick->GetX());
-        }
-    }
+
+
 
     
-    leftMotor->Set(jstick->GetY());
-    rightMotor->Set(jstick->GetY());
+    leftMotor->Set(jstick->GetRawAxis(1));
+    rightMotor->Set(jstick->GetRawAxis(3));
 
 
 }
