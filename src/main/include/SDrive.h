@@ -21,6 +21,7 @@ public:
     SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID);
     void Joystick_Display();
     void Arcade_Drive();
+    double DzShift(double input, double dz);
 
 
 
@@ -65,24 +66,26 @@ SDrive::SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID)
 void SDrive::Joystick_Display() {
     //frc::SmartDashboard::PutNumber("left y: ", -(jstick->GetRawAxis(1)));
     //frc::SmartDashboard::PutNumber("right y: ", jstick->GetRawAxis(3));
-    frc::SmartDashboard::PutBoolean("A_Button", controller->GetAButton());
-    frc::SmartDashboard::PutNumber("left x: ", controller->GetLeftX());
+    //frc::SmartDashboard::PutBoolean("A_Button", controller->GetAButton());    
     frc::SmartDashboard::PutNumber("left y: ", controller->GetLeftY());
     frc::SmartDashboard::PutNumber("right x:  ", controller->GetRightX());
-    frc::SmartDashboard::PutNumber("right y: ", controller->GetRightY());
+    frc::SmartDashboard::PutNumber("left joystick y: ", jstick->GetRawAxis(1));
+    frc::SmartDashboard::PutNumber("right joystick x:  ", jstick->GetRawAxis(4));
     //frc::SmartDashboard::PutNumber("current", m_leftLeadMotor->GetOutputCurrent());
 
 }
 void SDrive::Arcade_Drive() {
     int left_x = controller->GetLeftX();
-    int left_y = controller->GetLeftY();
+    int left_y = DzShift(controller->GetLeftY(), 0.2);
     int right_y = controller->GetRightY();
-    int right_x = controller->GetRightX();
+    int right_x = DzShift(controller->GetRightX(), 0.2);
+    //int j_ly = jstick->GetRawAxis(1);
+    //int j_rx = jstick->GetRawAxis(4);
     double left_Final;
     double right_Final;
     // Turning
-    if (right_x > 0.25 || right_x < -0.25) {
-        left_Final = right_x;
+    if (right_x > 0.2 || right_x < -0.2) {
+        left_Final = right_x; // add gradual change from 0 -> 0.2
         right_Final = -right_x;
     } else {
         left_Final = left_y;
@@ -110,8 +113,23 @@ void SDrive::Arcade_Drive() {
 
     m_leftLeadMotor->Set(left_Final);
     m_rightLeadMotor->Set(right_Final);
+    frc::SmartDashboard::PutNumber("Left speed:  ", left_Final);
+    frc::SmartDashboard::PutNumber("Right speed:  ", right_Final);
     //leftMotor->Set(jstick->GetRawAxis(1));
     //rightMotor->Set(jstick->GetRawAxis(3));
+
+
+}
+
+double SDrive::DzShift(double input, double dz) {
+    if (fabs(input) < dz) {
+        return 0.0;
+    }
+
+    double slope = 1 / (1 - dz);
+    double b = 1 - slope;
+    double output = ((input * slope) + b );
+    return output;
 
 
 }
