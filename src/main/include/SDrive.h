@@ -77,6 +77,17 @@ void SDrive::Arcade_Drive() {
     double left_Final;
     double right_Final;
     // Turning
+    if (right_x > 0.25 || right_x < -0.25) {
+        left_Final = right_x;
+        right_Final = -right_x;
+    } else {
+        left_Final = left_y;
+        right_Final = left_y;
+
+    }
+
+
+    /*
     if (controller->GetAButton()) {
         if (left_x > 0) {
             left_Final = left_y;
@@ -90,7 +101,7 @@ void SDrive::Arcade_Drive() {
         left_Final = left_y;
         right_Final = left_y;
     }
-
+    */
 
 
     m_leftLeadMotor->Set(left_Final);
