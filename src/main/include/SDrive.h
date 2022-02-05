@@ -63,9 +63,13 @@ SDrive::SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID)
 
 }
 void SDrive::Joystick_Display() {
-    frc::SmartDashboard::PutNumber("left y: ", -(jstick->GetRawAxis(1)));
-    frc::SmartDashboard::PutNumber("right y: ", jstick->GetRawAxis(3));
+    //frc::SmartDashboard::PutNumber("left y: ", -(jstick->GetRawAxis(1)));
+    //frc::SmartDashboard::PutNumber("right y: ", jstick->GetRawAxis(3));
     frc::SmartDashboard::PutBoolean("A_Button", controller->GetAButton());
+    frc::SmartDashboard::PutNumber("left x: ", controller->GetLeftX());
+    frc::SmartDashboard::PutNumber("left y: ", controller->GetLeftY());
+    frc::SmartDashboard::PutNumber("right x:  ", controller->GetRightX());
+    frc::SmartDashboard::PutNumber("right y: ", controller->GetRightY());
     //frc::SmartDashboard::PutNumber("current", m_leftLeadMotor->GetOutputCurrent());
 
 }
