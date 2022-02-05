@@ -74,8 +74,8 @@ void SDrive::Arcade_Drive() {
     int left_y = controller->GetLeftY();
     int right_y = controller->GetRightY();
     int right_x = controller->GetRightX();
-    int left_Final;
-    int right_Final;
+    double left_Final;
+    double right_Final;
     // Turning
     if (controller->GetAButton()) {
         if (left_x > 0) {
