@@ -22,6 +22,7 @@ public:
     void Joystick_Display();
     void Arcade_Drive();
     double DzShift(double input, double dz);
+    int driveMode;
 
 
 
@@ -35,7 +36,7 @@ SDrive::SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID)
     jstick = new frc::Joystick(controller_ID);
     //controller = new frc::XboxController(controller_ID);
 
-
+    driveMode = 0;
     //leftMotor = new rev::CANSparkMax(LL_ID, rev::CANSparkMax::MotorType::kBrushless);
     //rightMotor = new rev::CANSparkMax(RL_ID, rev::CANSparkMax::MotorType::kBrushless);
     m_leftLeadMotor->RestoreFactoryDefaults();
@@ -122,14 +123,21 @@ void SDrive::Arcade_Drive() {
 }
 
 double SDrive::DzShift(double input, double dz) {
+    double speed;
     if (fabs(input) < dz) {
         return 0.0;
     }
+    if (input < 0) {
+        double slope = 1 / (1 - dz);
+        double b = 1 - slope;
+        double output = ((input * slope) + b );
+        return output * fabs(output);
+    } else {
+        speed = (input + dz) / (1 - dz);
+        return speed * fabs(speed);
+    }
 
-    double slope = 1 / (1 - dz);
-    double b = 1 - slope;
-    double output = ((input * slope) + b );
-    return output;
+    
 
 
 }
