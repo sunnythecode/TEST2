@@ -2,6 +2,7 @@
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
 #include <frc/XboxController.h>
+#include <frc/drive/DifferentialDrive.h>
 
 class SDrive
 {
@@ -22,7 +23,8 @@ public:
     void Joystick_Display();
     void Arcade_Drive();
     double DzShift(double input, double dz);
-    int driveMode;
+    frc::DifferentialDrive* robotDrive;
+    int driveMode = 0;
 
 
 
@@ -34,6 +36,7 @@ SDrive::SDrive(int controller_ID, int LL_ID, int RL_ID, int LF_ID, int RF_ID)
     rev::CANSparkMax* m_leftFollowMotor = new rev::CANSparkMax(LF_ID, rev::CANSparkMax::MotorType::kBrushless);
     rev::CANSparkMax* m_rightFollowMotor = new rev::CANSparkMax(RF_ID, rev::CANSparkMax::MotorType::kBrushless);
     jstick = new frc::Joystick(controller_ID);
+    frc::DifferentialDrive* robotDrive = new frc::DifferentialDrive(*m_leftLeadMotor, *m_rightLeadMotor);
     //controller = new frc::XboxController(controller_ID);
 
     driveMode = 0;
@@ -76,53 +79,44 @@ void SDrive::Joystick_Display() {
 
 }
 void SDrive::Arcade_Drive() {
-    int left_x = controller->GetLeftX();
-    int left_y = DzShift(controller->GetLeftY(), 0.2);
-    int right_y = controller->GetRightY();
-    int right_x = DzShift(controller->GetRightX(), 0.2);
-    //int j_ly = jstick->GetRawAxis(1);
-    //int j_rx = jstick->GetRawAxis(4);
-    double left_Final;
-    double right_Final;
-    // Turning
-    if (right_x > 0.2 || right_x < -0.2) {
-        left_Final = right_x; // add gradual change from 0 -> 0.2
-        right_Final = -right_x;
-    } else {
-        left_Final = left_y;
-        right_Final = left_y;
-
+    if (controller->GetAButtonPressed()) {
+        driveMode = driveMode + 1;
     }
+    if (driveMode % 2 == 1) {
+        robotDrive->TankDrive(DzShift(controller->GetLeftY(), 0.2), DzShift(controller->GetRightY(), 0.2) );
+    } else if(driveMode % 2 == 0) {
+        double left_x = controller->GetLeftX();
+        double left_y = DzShift(controller->GetLeftY(), 0.2);
+        double right_y = controller->GetRightY();
+        double right_x = DzShift(controller->GetRightX(), 0.2);
 
 
-    /*
-    if (controller->GetAButton()) {
-        if (left_x > 0) {
-            left_Final = left_y;
-            right_Final = left_y - left_x;
+        //int j_ly = jstick->GetRawAxis(1);
+        //int j_rx = jstick->GetRawAxis(4);
+
+        double left_Final;
+        double right_Final;
+
+
+        // Turning
+        if (right_x > 0.2 || right_x < -0.2) {
+            left_Final = right_x; // add gradual change from 0 -> 0.2
+            right_Final = -right_x;
         } else {
-            left_Final = left_y + left_x;
+            left_Final = left_y;
             right_Final = left_y;
         }
-        //No Turn
-    } else {
-        left_Final = left_y;
-        right_Final = left_y;
+
+
+        m_leftLeadMotor->Set(left_Final);
+        m_rightLeadMotor->Set(right_Final);
+        frc::SmartDashboard::PutNumber("Left speed:  ", left_Final);
+        frc::SmartDashboard::PutNumber("Right speed:  ", right_Final);
     }
-    */
-
-
-    m_leftLeadMotor->Set(left_Final);
-    m_rightLeadMotor->Set(right_Final);
-    frc::SmartDashboard::PutNumber("Left speed:  ", left_Final);
-    frc::SmartDashboard::PutNumber("Right speed:  ", right_Final);
-    //leftMotor->Set(jstick->GetRawAxis(1));
-    //rightMotor->Set(jstick->GetRawAxis(3));
-
 
 }
 
-double SDrive::DzShift(double input, double dz) {
+double SDrive::DzShift(double input, double dz = 0.2) {
     double speed;
     if (fabs(input) < dz) {
         return 0.0;
